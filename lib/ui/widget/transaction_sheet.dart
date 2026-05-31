@@ -54,20 +54,28 @@ class TransactionSheet extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isIncome = type == TransactionType.income;
-    final color = isIncome ? colorScheme.primary : colorScheme.secondary;
+    final color = isIncome ? const Color(0xFF00BFA6) : const Color(0xFFFF914D);
     final formTitle = type.nameSingular; // Retorna 'Receita' ou 'Despesa'
 
     // Altura disponível para o bottom sheet (75% da altura da tela)
     final availableHeight = MediaQuery.of(context).size.height * 0.75;
 
+    const Color corFundoInicio = Color(0xFF1E252B); // Grafite moderno
+    const Color corFundoFim = Color(0xFF11161B);    // Quase preto mineral
+
     return Container(
       height: availableHeight,
       decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
         ),
+        gradient: const LinearGradient(
+          colors: [corFundoInicio, corFundoFim],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,10 +83,8 @@ class TransactionSheet extends StatelessWidget {
           // Cabeçalho e "alça" do sheet
           Container(
             decoration: BoxDecoration(
-              color: color,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
+              border: Border(
+                bottom: BorderSide(color: Colors.white.withOpacity(0.05), width: 1),
               ),
             ),
             child: Column(
@@ -89,7 +95,7 @@ class TransactionSheet extends StatelessWidget {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: colorScheme.onPrimary.withValues(alpha: 0.5),
+                    color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -100,16 +106,25 @@ class TransactionSheet extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        isIncome ? Icons.trending_up : Icons.trending_down,
-                        color: colorScheme.onPrimary,
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          isIncome ? Icons.trending_up : Icons.trending_down,
+                          color: color,
+                          size: 22,
+                        ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 12),
                       Text(
                         '${transaction != null ? 'Editar' : 'Adicionar'} $formTitle',
                         style: theme.textTheme.titleLarge?.copyWith(
-                          color: colorScheme.onPrimary,
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ],

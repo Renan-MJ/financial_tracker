@@ -138,12 +138,22 @@ class _TransactionFormState extends State<TransactionForm> {
             // Campo de entrada para a descrição (título)
             TextFormField(
               controller: _titleController,
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Descrição',
+                labelStyle: const TextStyle(color: Colors.white60),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: widget.color),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                prefixIcon: const Icon(Icons.description),
+                prefixIcon: Icon(Icons.description, color: widget.color),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -157,12 +167,22 @@ class _TransactionFormState extends State<TransactionForm> {
             // Campo de entrada para o valor
             TextFormField(
               controller: _amountController,
+              style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 labelText: 'Valor',
+                labelStyle: const TextStyle(color: Colors.white60),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: widget.color),
+                ),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                prefixIcon: const Icon(Icons.attach_money),
+                prefixIcon: Icon(Icons.attach_money, color: widget.color),
               ),
               keyboardType: const TextInputType.numberWithOptions(
                 decimal: true,
@@ -183,25 +203,34 @@ class _TransactionFormState extends State<TransactionForm> {
             const SizedBox(height: 16),
 
             // Seção para exibir e escolher a data
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Data: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ),
-                TextButton(
-                  onPressed: _presentDatePicker,
-                  child: Text(
-                    'Selecionar Data',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: widget.color,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.02),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white.withOpacity(0.05)),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Data: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}',
+                      style: const TextStyle(color: Colors.white70, fontSize: 15),
                     ),
                   ),
-                ),
-              ],
+                  TextButton.icon(
+                    onPressed: _presentDatePicker,
+                    icon: Icon(Icons.calendar_today, size: 16, color: widget.color),
+                    label: Text(
+                      'Selecionar Data',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: widget.color,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 32),
 
@@ -210,34 +239,36 @@ class _TransactionFormState extends State<TransactionForm> {
               final isRunning = widget.submitCommand.runningSignal.value;
 
               return SizedBox(
-                height: 50,
+                height: 55,
                 child: ElevatedButton(
                   onPressed: _submitForm,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: widget.color,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                   child:
                       isRunning
                           ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
                               ),
-                            ),
-                          )
+                            )
                           : Text(
-                            //muda o texto se for edicao
-                            widget.transaction != null
-                                ? 'Salvar Alterações'
-                                : 'Adicionar ${widget.type.nameSingular}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
+                              //muda o texto se for edicao
+                              widget.transaction != null
+                                  ? 'Salvar Alterações'
+                                  : 'Adicionar ${widget.type.nameSingular}',
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
                 ),
               );
             }),

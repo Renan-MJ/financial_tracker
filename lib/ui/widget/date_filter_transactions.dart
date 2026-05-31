@@ -130,67 +130,55 @@ class _DateFilterWidgetState extends State<DateFilterTransactions> {
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // 🎨 CONFIGURAÇÃO DE CORES DO SEU RESUMO FINANCEIRO
-    const Color corComecoGradiente = Color(0xFF252E35); // Tom mais claro em cima (iluminação/relevo)
-    const Color corFimGradiente = Color(0xFF1E252B);    // Tom grafite escuro embaixo
+    // 🎨 PALETA DE CORES PERSONALIZADA (DARK PREMIUM & NEON CONTRAST)
+    const Color corFundoInicio = Color(0xFF1E252B); // Grafite moderno
+    const Color corFundoFim = Color(0xFF11161B);    // Quase preto mineral
 
     return Card(
+      elevation: 0, // ESTILO: Removida a sombra pesada para um design mais minimalista
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)), // ESTILO: Bordas mais curvas e premium
       margin: const EdgeInsets.all(16),
-      elevation: 0, // Tiramos a sombra nativa cinza do Material para usar a sombra realista abaixo
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(20), // ESTILO: Um pouco mais de respiro interno
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          // ✨ AQUI ESTÁ O SEGREDO: O exato gradiente do resumo financeiro
+          borderRadius: BorderRadius.circular(24),
           gradient: const LinearGradient(
-            colors: [
-              corComecoGradiente,
-              corFimGradiente,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [corFundoInicio, corFundoFim],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          // ✨ EFEITO SALTADO: Sombra projetada que faz o card parecer flutuar na tela
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.white.withOpacity(0.03),
-              blurRadius: 1,
-              offset: const Offset(0, -1), // Linha de luz sutil no topo
-            ),
-          ],
+          // ESTILO: Uma linha sutil de contorno para dar acabamento de "cartão de crédito premium"
+          border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Título do filtro adaptado para branco para contrastar com o novo fundo
+            // Filter title
             Row(
               children: [
                 IconButton(
                   icon: const Icon(
                     Icons.filter_list,
-                    color: Colors.white70, // Branco fosco elegante
+                    color: Colors.white70, // ESTILO: Texto secundário em branco fosco
                   ),
                   onPressed: () {
-                    widget.onTapHideFilter?.call();
+                    // Aqui você aciona a função que alterna visibilidade
+                    // Essa função vem da tela principal, então passe como parâmetro
+                    widget.onTapHideFilter
+                        ?.call(); // ou diretamente: _toggleFilterVisibility()
                   },
                 ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'Filtro de Data de Transações',
-                  style: TextStyle(
+                  style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // Texto agora é branco puro
-                    fontSize: 16,
+                    color: Colors.white70, // ESTILO: Texto secundário em branco fosco
+                    letterSpacing: 0.5,
                   ),
                 ),
               ],
@@ -222,7 +210,7 @@ class _DateFilterWidgetState extends State<DateFilterTransactions> {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF181E22), // Recesso interno sutil
+                    color: const Color(0xFF1E252B).withOpacity(0.5),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: Colors.white.withOpacity(0.05)),
                   ),
@@ -232,18 +220,22 @@ class _DateFilterWidgetState extends State<DateFilterTransactions> {
                       const Icon(
                         Icons.date_range,
                         size: 18,
-                        color: Color(0xFF00BFA6), // Verde Neon para destacar
+                        color: Color(0xFF00BFA6),
                       ),
                       const SizedBox(width: 8),
                       Text(
                         '${DateFormat('dd/MM/yyyy').format(_startDate!)} - ${DateFormat('dd/MM/yyyy').format(_endDate!)}',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                          color: Color(0xFF00BFA6),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       const SizedBox(width: 4),
                       const Icon(
                         Icons.edit,
                         size: 16,
-                        color: Colors.white54,
+                        color: Color(0xFF00BFA6),
                       ),
                     ],
                   ),
@@ -264,14 +256,23 @@ class _DateFilterWidgetState extends State<DateFilterTransactions> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 700),
       child: ChoiceChip(
+        elevation: 0,
+        pressElevation: 0,
+        showCheckmark: false,
+        backgroundColor: Colors.white.withOpacity(0.04),
+        side: BorderSide(
+          color: isSelected ? const Color(0xFF00BFA6).withOpacity(0.3) : Colors.white.withOpacity(0.05),
+          width: 1,
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         checkmarkColor: theme.colorScheme.onSecondary,
         label: Text(label),
         selected: isSelected,
-        selectedColor: theme.colorScheme.primary.withValues(alpha: 0.9),
+        selectedColor: const Color(0xFF1E252B),
         labelStyle: TextStyle(
           color:
               isSelected
-                  ? theme.colorScheme.onSecondary
+                  ? const Color(0xFF00BFA6)
                   : theme.textTheme.bodyLarge?.color,
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         ),
