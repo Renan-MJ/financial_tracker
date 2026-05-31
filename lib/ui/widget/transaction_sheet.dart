@@ -14,6 +14,8 @@ class TransactionSheet extends StatelessWidget {
   /// e o resultado da execução
   final Command1<void, Failure, TransactionEntity> submitCommand;
 
+  final TransactionEntity? transaction;
+
   /// Função callback quando a transação é submetida
   // final Function(TransactionEntity newTransaction) onSubmit;
 
@@ -22,6 +24,7 @@ class TransactionSheet extends StatelessWidget {
     required this.type,
     // required this.onSubmit,
     required this.submitCommand,
+    this.transaction,
   });
 
   /// Método auxiliar para exibir o bottom sheet como um modal
@@ -30,6 +33,7 @@ class TransactionSheet extends StatelessWidget {
     required TransactionType type,
     // required Function(TransactionEntity newTransaction) onSubmit,
     required Command1<void, Failure, TransactionEntity> submitCommand,
+    TransactionEntity? transaction,
   }) async {
     return showModalBottomSheet(
       context: context,
@@ -40,6 +44,7 @@ class TransactionSheet extends StatelessWidget {
             type: type,
             // onSubmit: onSubmit,
             submitCommand: submitCommand,
+            transaction: transaction,
           ),
     );
   }
@@ -101,7 +106,7 @@ class TransactionSheet extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Adicionar $formTitle',
+                        '${transaction != null ? 'Editar' : 'Adicionar'} $formTitle',
                         style: theme.textTheme.titleLarge?.copyWith(
                           color: colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
@@ -126,6 +131,7 @@ class TransactionSheet extends StatelessWidget {
                   type: type,
                   color: color,
                   submitCommand: submitCommand,
+                  transaction: transaction,
                   // onSubmit: (newTransaction) {
                   //   onSubmit(newTransaction);
                   //   Navigator.pop(context); // Fecha o bottom sheet

@@ -167,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             // Transactions card widget with Income and Expense tabs
             Watch((context) {
-              //final transactions = viewModelController.transctions.value;
+              //final transactions = viewModelController.transactions.value;
               final incomes = viewModelController.incomes.value;
               final expenses = viewModelController.expenses.value;
               return TransactionCardSheets(
@@ -175,6 +175,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 expenseTransactions: expenses,
                 onDelete: (id) {
                   viewModelController.deleteTransaction.execute(id);
+                },
+                onEdit: (transaction) {
+                  if (transaction.type == TransactionType.income) {
+                    _showIncomeSheet(context, transaction: transaction);
+                  } else {
+                    _showExpenseSheet(context, transaction: transaction);
+                  }
                 },
                 undoDelete: viewModelController.undoDelectedTransaction,
                 scaffoldContext: context,
@@ -239,13 +246,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Show income transaction sheet
-  void _showIncomeSheet(BuildContext context) {
+  void _showIncomeSheet(BuildContext context, {TransactionEntity? transaction}) {
     //final transactionProvider = Provider.of<TransactionProvider>(context, listen: false);
 
     TransactionSheet.show(
       context: context,
       type: TransactionType.income,
-      submitCommand: viewModelController.saveTransaction,
+      submitCommand: transaction != null
+          ? viewModelController.editTransaction
+          : viewModelController.saveTransaction,
+      transaction: transaction,
       // onSubmit: (newTransaction) {
       //   viewModelController.saveTransaction.execute(newTransaction);
       // },
@@ -256,13 +266,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Show expense transaction sheet
-  void _showExpenseSheet(BuildContext context) {
+  void _showExpenseSheet(BuildContext context, {TransactionEntity? transaction}) {
     //final transactionProvider = Provider.of<TransactionProvider>(context, listen: false);
 
     TransactionSheet.show(
       context: context,
       type: TransactionType.expense,
-      submitCommand: viewModelController.saveTransaction,
+      submitCommand: transaction != null
+          ? viewModelController.editTransaction
+          : viewModelController.saveTransaction,
+      transaction: transaction,
       // onSubmit: (newTransaction) {
       //   viewModelController.saveTransaction.execute(newTransaction);
       // },

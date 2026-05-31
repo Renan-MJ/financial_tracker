@@ -13,6 +13,7 @@ class TransactionCardSheets extends StatefulWidget {
   expenseTransactions; // Lista de transações de despesas
   final Function(String id)
   onDelete; // Callback para deletar uma transação pelo ID
+  final Function(TransactionEntity transaction) onEdit;
 
   final Command1<void, Failure, TransactionEntity>
   undoDelete; // Callback para desfazer exclusão
@@ -24,6 +25,7 @@ class TransactionCardSheets extends StatefulWidget {
     required this.incomeTransactions,
     required this.expenseTransactions,
     required this.onDelete,
+    required this.onEdit,
     required this.undoDelete,
     required this.scaffoldContext,
   });
@@ -208,7 +210,7 @@ class _TransactionCardSheetsState extends State<TransactionCardSheets>
     }
 
     return Scrollbar(
-      thumbVisibility: true, // Mostra a barra de rolagem sempre
+      //thumbVisibility: true, // Mostra a barra de rolagem sempre
       child: ListView.builder(
         padding: const EdgeInsets.symmetric(
           vertical: 8,
@@ -306,6 +308,7 @@ class _TransactionCardSheetsState extends State<TransactionCardSheets>
                 ), // Borda cinza clara
               ),
               child: ListTile(
+                onTap: () => widget.onEdit(transaction),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 8,

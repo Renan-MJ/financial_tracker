@@ -17,6 +17,8 @@ class TransactionForm extends StatefulWidget {
   /// Tipo de transação (receita ou despesa)
   final TransactionType type;
 
+  final TransactionEntity? transaction;
+
   /// Cor do tema para o formulário
   final Color color;
 
@@ -26,6 +28,7 @@ class TransactionForm extends StatefulWidget {
     required this.type,
     required this.color,
     required this.submitCommand,
+    this.transaction
   });
 
   @override
@@ -37,6 +40,16 @@ class _TransactionFormState extends State<TransactionForm> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.transaction != null) {
+      _titleController.text = widget.transaction!.title;
+      _amountController.text = widget.transaction!.amount.toString();
+      _selectedDate = widget.transaction!.date;
+    }
+  }
 
   @override
   void dispose() {
@@ -68,6 +81,7 @@ class _TransactionFormState extends State<TransactionForm> {
       final enteredAmount = double.parse(_amountController.text);
 
       final newTransaction = TransactionEntity(
+        id:  widget.transaction?.id ?? '',
         title: enteredTitle,
         amount: enteredAmount,
         date: _selectedDate,
@@ -82,7 +96,7 @@ class _TransactionFormState extends State<TransactionForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Erro ao adicionar ${widget.type.nameSingular}: ${widget.submitCommand.resultSignal.value?.failureValueOrNull ?? 'Erro desconhecido'}',
+              'Erro ao salvar ${widget.type.nameSingular}: ${widget.submitCommand.resultSignal.value?.failureValueOrNull ?? 'Erro desconhecido'}',
             ),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 2),
@@ -100,9 +114,10 @@ class _TransactionFormState extends State<TransactionForm> {
       });
 
       // Mostra uma mensagem de sucesso
+      final msg = widget.transaction != null ? 'Atualizada' : 'Adicionada';
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${widget.type.nameSingular} Adicionada com Sucesso!'),
+          content: Text('${widget.type.nameSingular} $msg com Sucesso!'),
           backgroundColor: widget.color,
           duration: const Duration(seconds: 2),
         ),
@@ -217,7 +232,10 @@ class _TransactionFormState extends State<TransactionForm> {
                             ),
                           )
                           : Text(
-                            'Adicionar ${widget.type.nameSingular}',
+                            //muda o texto se for edicao
+                            widget.transaction != null
+                                ? 'Salvar Alterações'
+                                : 'Adicionar ${widget.type.nameSingular}',
                             style: const TextStyle(fontSize: 16),
                           ),
                 ),

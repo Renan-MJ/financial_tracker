@@ -22,6 +22,7 @@ class HomePageController {
     saveTransaction = Command1(_saveTransaction);
     undoDelectedTransaction = Command1(_undoDelectedTransaction);
     deleteTransaction = Command1(_deleteTransaction);
+    editTransaction = Command1(_editTransaction);
     //loadSample = Command0<void, void>(_resetToSample);
     incomes = Computed(
       () =>
@@ -62,6 +63,7 @@ class HomePageController {
   late final Command1<void, Failure, TransactionEntity> saveTransaction;
   late final Command1<void, Failure, TransactionEntity> undoDelectedTransaction;
   late final Command1<void, Failure, String> deleteTransaction;
+  late final Command1<void, Failure, TransactionEntity> editTransaction;
   late final Command2<List<TransactionEntity>, Failure, DateTime, DateTime>
   searchTransactionsByDate;
   //late final Command0<void, void> loadSample;
@@ -149,6 +151,26 @@ class HomePageController {
     return result;
   }
 
+  Future<Result<void, Failure>> _editTransaction(
+    TransactionEntity transaction,
+  ) async {
+    final result = await _transactionsUseCases.updateTransaction.call((
+      transaction: transaction,
+    ));
+    // Se salvou com sucesso, atualiza a lista reativa (Signal) da tela
+    if (result.isSuccess) {
+      final list = [..._transactions.value]; // Copia a lista atual
+      final index = list.indexWhere((e) => e.id == transaction.id); // pega o item pelo ID
+
+      if (index != -1) {
+        list[index] = transaction; // Substitui o antigo pelo atualizado
+        _transactions.value = list; // Recarrega a tela com os novos dados
+      }
+    }
+
+    return result;
+  }
+
   // Restaura transação excluída e atualiza signal
   Future<Result<void, Failure>> _undoDelectedTransaction(
     TransactionEntity transaction,
@@ -160,7 +182,6 @@ class HomePageController {
       final result = await _transactionsUseCases.addTransaction.call((
         transaction: last,
       ));
-
 
       if (result.isSuccess) {
         final list = [..._transactions.value];
