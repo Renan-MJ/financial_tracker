@@ -72,9 +72,7 @@ class _SummaryCarouselState extends State<SummaryCarousel>
                 HapticFeedback.lightImpact();
               },
               itemBuilder: (context, index) {
-                // Select which widget to show based on index
                 if (index == 0) {
-                  // Summary card page
                   return Hero(
                     tag: 'summary1-card',
                     child: Padding(
@@ -87,20 +85,13 @@ class _SummaryCarouselState extends State<SummaryCarousel>
                     ),
                   );
                 } else {
-                  // Chart widget page
                   return Hero(
                     tag: 'chart-widget',
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: SummaryChart(
-                          totalIncome: widget.totalIncome,
-                          totalExpense: widget.totalExpense,
-                        ),
+                      child: SummaryChart(
+                        totalIncome: widget.totalIncome,
+                        totalExpense: widget.totalExpense,
                       ),
                     ),
                   );

@@ -23,94 +23,121 @@ class SummaryChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Chart title
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Icon(
-                Icons.pie_chart,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Receitas vs. Despesas',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-        ),
+    const Color corFundoInicio = Color(0xFF1E252B); // Grafite moderno
+    const Color corFundoFim = Color(0xFF11161B);    // Preto mineral
+    const Color verdeClaroNeon = Color(0xFF00BFA6); // Verde moderno para Receita
+    const Color laranjaClaroNeon = Color(0xFFFF914D); // Laranja moderno para Despesa
 
-        // Choose between pie chart and bar chart based on data availability
-        if (totalIncome == 0 && totalExpense == 0)
-          _buildEmptyState(context)
-        else
-          Container(
-            height: 160,
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                // Pie chart section
-                Expanded(flex: 3, child: _buildPieChart(context)),
-                const SizedBox(width: 10),
-                // Legend section
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildLegendItem(
-                        context,
-                        'Receitas',
-                        Theme.of(context).colorScheme.secondary,
-                        totalIncome,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildLegendItem(
-                        context,
-                        'Despesas',
-                        Theme.of(context).colorScheme.tertiary,
-                        totalExpense,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      margin: const EdgeInsets.all(16), // Mesma margem externa do SummaryCard
+      child: Container(
+        padding: const EdgeInsets.all(20), // Mesmo espaçamento interno do SummaryCard
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(24),
+          gradient: const LinearGradient(
+            colors: [corFundoInicio, corFundoFim],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-      ],
+          border: Border.all(color: Colors.white.withOpacity(0.05), width: 1),
+        ),
+        child: Column(
+          children: [
+            // Chart title
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4.0),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.pie_chart_rounded,
+                    color: Colors.white70,
+                    size: 22,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Receitas vs. Despesas',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.2,
+                        ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Choose between pie chart and bar chart based on data availability
+            if (totalIncome == 0 && totalExpense == 0)
+              _buildEmptyState(context)
+            else
+              Container(
+                height: 124,
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  children: [
+                    // Pie chart section
+                    Expanded(
+                      flex: 3,
+                      child: _buildPieChart(context, verdeClaroNeon, laranjaClaroNeon),
+                    ),
+                    const SizedBox(width: 16),
+                    // Legend section
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildLegendItem(
+                            context,
+                            'Receitas',
+                            verdeClaroNeon,
+                            totalIncome,
+                          ),
+                          const SizedBox(height: 12),
+                          _buildLegendItem(
+                            context,
+                            'Despesas',
+                            laranjaClaroNeon,
+                            totalExpense,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
   /// Build pie chart visualization
-  Widget _buildPieChart(BuildContext context) {
+  Widget _buildPieChart(BuildContext context, Color incomeColor, Color expenseColor) {
     return PieChart(
       PieChartData(
-        sectionsSpace: 2,
-        centerSpaceRadius: 30,
+        sectionsSpace: 3,
+        centerSpaceRadius: 12, // Ajustado proporcionalmente
         sections: [
           // Income section
           PieChartSectionData(
             value: totalIncome,
             title: '',
-            radius: 60,
-            color: Theme.of(context).colorScheme.secondary,
+            radius: 40, // Mantém o aspecto encorpado se ajustando à nova altura
+            color: incomeColor,
             showTitle: false,
           ),
           // Expense section
           PieChartSectionData(
             value: totalExpense,
             title: '',
-            radius: 60,
-            color: Theme.of(context).colorScheme.tertiary,
+            radius: 40,
+            color: expenseColor,
             showTitle: false,
           ),
         ],
-        // Optional styling
         borderData: FlBorderData(show: false),
         pieTouchData: PieTouchData(enabled: false),
       ),
@@ -129,22 +156,39 @@ class SummaryChart extends StatelessWidget {
       children: <Widget>[
         Row(
           children: [
-            Container(width: 16, height: 16, color: color),
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.circle,
+              ),
+            ),
             const SizedBox(width: 8),
             Expanded(
-              child: Text(title, style: Theme.of(context).textTheme.bodyLarge),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white60,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ],
         ),
+        const SizedBox(height: 1),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const SizedBox(width: 25),
+            const SizedBox(width: 18),
             Text(
               Formatter.formatCurrency(amount),
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: color,
+                fontSize: 14,
+              ),
             ),
           ],
         ),
@@ -155,25 +199,28 @@ class SummaryChart extends StatelessWidget {
   /// Build empty state when no data is available
   Widget _buildEmptyState(BuildContext context) {
     return Container(
-      height: 176,
+      height: 124,
       alignment: Alignment.center,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.insert_chart, size: 48, color: Colors.grey[400]),
-          const SizedBox(height: 16),
-          Text(
-            'Sem transações cadastradas',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: Colors.grey[600]),
-          ),
+          const Icon(Icons.insert_chart_outlined_rounded, size: 36, color: Colors.white30),
           const SizedBox(height: 8),
+          const Text(
+            'Sem transações cadastradas',
+            style: TextStyle(
+              color: Colors.white70,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 2),
           Text(
             'Adicione transações para visualizar o gráfico',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+            style: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 12,
+            ),
           ),
         ],
       ),

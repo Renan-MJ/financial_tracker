@@ -130,51 +130,67 @@ class _DateFilterWidgetState extends State<DateFilterTransactions> {
     }
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // 🎨 CONFIGURAÇÃO DE CORES DO SEU RESUMO FINANCEIRO
+    const Color corComecoGradiente = Color(0xFF252E35); // Tom mais claro em cima (iluminação/relevo)
+    const Color corFimGradiente = Color(0xFF1E252B);    // Tom grafite escuro embaixo
+
     return Card(
       margin: const EdgeInsets.all(16),
-      elevation: 2,
+      elevation: 0, // Tiramos a sombra nativa cinza do Material para usar a sombra realista abaixo
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
+          // ✨ AQUI ESTÁ O SEGREDO: O exato gradiente do resumo financeiro
+          gradient: const LinearGradient(
             colors: [
-              theme.colorScheme.primary.withValues(alpha: 0.7),
-              theme.colorScheme.secondary,
+              corComecoGradiente,
+              corFimGradiente,
             ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
+          // ✨ EFEITO SALTADO: Sombra projetada que faz o card parecer flutuar na tela
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(
+              color: Colors.white.withOpacity(0.03),
+              blurRadius: 1,
+              offset: const Offset(0, -1), // Linha de luz sutil no topo
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Filter title
+            // Título do filtro adaptado para branco para contrastar com o novo fundo
             Row(
               children: [
                 IconButton(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.filter_list,
-                    color: theme.colorScheme.onSecondary,
+                    color: Colors.white70, // Branco fosco elegante
                   ),
                   onPressed: () {
-                    // Aqui você aciona a função que alterna visibilidade
-                    // Essa função vem da tela principal, então passe como parâmetro
-                    widget.onTapHideFilter
-                        ?.call(); // ou diretamente: _toggleFilterVisibility()
+                    widget.onTapHideFilter?.call();
                   },
                 ),
                 const SizedBox(width: 8),
-                Text(
+                const Text(
                   'Filtro de Data de Transações',
-                  style: theme.textTheme.titleMedium?.copyWith(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onSecondary,
+                    color: Colors.white, // Texto agora é branco puro
+                    fontSize: 16,
                   ),
                 ),
               ],
@@ -184,6 +200,7 @@ class _DateFilterWidgetState extends State<DateFilterTransactions> {
             // Wrap envolve os widgets filhos em uma linha com quebra automática
             Wrap(
               spacing: 8,
+              runSpacing: 8,
               children: [
                 _buildFilterChip(DateFilterType.all, 'Tudo'),
                 _buildFilterChip(DateFilterType.today, 'Hoje'),
@@ -205,28 +222,28 @@ class _DateFilterWidgetState extends State<DateFilterTransactions> {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer,
+                    color: const Color(0xFF181E22), // Recesso interno sutil
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: theme.colorScheme.outline),
+                    border: Border.all(color: Colors.white.withOpacity(0.05)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.date_range,
                         size: 18,
-                        color: theme.colorScheme.primary,
+                        color: Color(0xFF00BFA6), // Verde Neon para destacar
                       ),
                       const SizedBox(width: 8),
                       Text(
                         '${DateFormat('dd/MM/yyyy').format(_startDate!)} - ${DateFormat('dd/MM/yyyy').format(_endDate!)}',
-                        style: theme.textTheme.bodyMedium,
+                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                       ),
                       const SizedBox(width: 4),
-                      Icon(
+                      const Icon(
                         Icons.edit,
                         size: 16,
-                        color: theme.colorScheme.primary,
+                        color: Colors.white54,
                       ),
                     ],
                   ),
